@@ -51,7 +51,7 @@ const items = [
     lastUpdated: { label: 'Today', timestamp: 5 },
     lastUpdate: { label: 'You viewed this', icon: <OpenRegular /> },
   },
-  ...Array.from({ length: 20 }, (_, i) => ({
+  ...Array.from({ length: 30 }, (_, i) => ({
     file: { label: `Document ${i + 6}`, icon: <DocumentRegular /> },
     author: { label: `User ${i + 6}`, status: 'available' as const },
     lastUpdated: { label: `${i + 1} days ago`, timestamp: i + 6 },
@@ -69,52 +69,64 @@ const columns = [
 const HomePage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   return (
-    <div style={{ display: 'flex' }}>
-      <Table
-        size="small"
-        aria-label="Table with small size"
-        style={{ minWidth: '475px' }}>
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => (
-              <TableHeaderCell key={column.columnKey}>
-                {column.label}
-              </TableHeaderCell>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item) => (
-            <TableRow
-              key={item.file.label}
-              onClick={() => setSelectedFile(item.file)}>
-              <TableCell>
-                <TableCellLayout media={item.file.icon}>
-                  {item.file.label}
-                </TableCellLayout>
-              </TableCell>
-              <TableCell>
-                <TableCellLayout
-                  media={
-                    <Avatar
-                      aria-label={item.author.label}
-                      name={item.author.label}
-                      badge={{ status: item.author.status }}
-                    />
-                  }>
-                  {item.author.label}
-                </TableCellLayout>
-              </TableCell>
-              <TableCell>{item.lastUpdated.label}</TableCell>
-              <TableCell>
-                <TableCellLayout media={item.lastUpdate.icon}>
-                  {item.lastUpdate.label}
-                </TableCellLayout>
-              </TableCell>
+    <div
+      style={{
+        display: 'flex',
+        height: 'calc(100vh - 60px)',
+        overflow: 'hidden',
+      }}>
+      <div
+        style={{
+          flex: '1',
+          overflowY: 'auto',
+          borderRight: '1px solid #e0e0e0',
+        }}>
+        <Table
+          size="small"
+          aria-label="Table with small size"
+          style={{ width: '100%' }}>
+          <TableHeader>
+            <TableRow>
+              {columns.map((column) => (
+                <TableHeaderCell key={column.columnKey}>
+                  {column.label}
+                </TableHeaderCell>
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {items.map((item) => (
+              <TableRow
+                key={item.file.label}
+                onClick={() => setSelectedFile(item.file)}>
+                <TableCell>
+                  <TableCellLayout media={item.file.icon}>
+                    {item.file.label}
+                  </TableCellLayout>
+                </TableCell>
+                <TableCell>
+                  <TableCellLayout
+                    media={
+                      <Avatar
+                        aria-label={item.author.label}
+                        name={item.author.label}
+                        badge={{ status: item.author.status }}
+                      />
+                    }>
+                    {item.author.label}
+                  </TableCellLayout>
+                </TableCell>
+                <TableCell>{item.lastUpdated.label}</TableCell>
+                <TableCell>
+                  <TableCellLayout media={item.lastUpdate.icon}>
+                    {item.lastUpdate.label}
+                  </TableCellLayout>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <FileDetails file={selectedFile} />
     </div>
   );

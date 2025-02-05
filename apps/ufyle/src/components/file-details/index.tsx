@@ -1,135 +1,159 @@
-import FileDetails from '@/components/file-details';
+import * as React from 'react';
 import {
+  Card,
+  CardHeader,
+  CardFooter,
+  Button,
+  Text,
+  Divider,
+  tokens,
   Avatar,
-  Table,
-  TableBody,
-  TableCell,
-  TableCellLayout,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
 } from '@fluentui/react-components';
 import {
-  DocumentPdfRegular,
+  ShareRegular,
+  MoreHorizontalRegular,
+  ArrowDownloadFilled,
   DocumentRegular,
-  EditRegular,
   FolderRegular,
-  OpenRegular,
-  PeopleRegular,
   VideoRegular,
+  DocumentPdfRegular,
 } from '@fluentui/react-icons';
-import { useState } from 'react';
 
-const items = [
-  {
-    file: { label: 'Project Plan', icon: <DocumentRegular /> },
-    author: { label: 'Alice Johnson', status: 'available' as const },
-    lastUpdated: { label: '3h ago', timestamp: 1 },
-    lastUpdate: { label: 'You edited this', icon: <EditRegular /> },
-  },
-  {
-    file: { label: 'Marketing Strategy', icon: <FolderRegular /> },
-    author: { label: 'Bob Smith', status: 'busy' as const },
-    lastUpdated: { label: 'Yesterday', timestamp: 2 },
-    lastUpdate: { label: 'You opened this', icon: <OpenRegular /> },
-  },
-  {
-    file: { label: 'Financial Report', icon: <DocumentPdfRegular /> },
-    author: { label: 'Charlie Davis', status: 'away' as const },
-    lastUpdated: { label: 'Last week', timestamp: 3 },
-    lastUpdate: { label: 'You shared this', icon: <PeopleRegular /> },
-  },
-  {
-    file: { label: 'HR Policies', icon: <DocumentRegular /> },
-    author: { label: 'Dana White', status: 'offline' as const },
-    lastUpdated: { label: 'Tue at 9:30 AM', timestamp: 4 },
-    lastUpdate: { label: 'You edited this', icon: <EditRegular /> },
-  },
-  {
-    file: { label: 'Sales Forecast', icon: <VideoRegular /> },
-    author: { label: 'Eve Adams', status: 'available' as const },
-    lastUpdated: { label: 'Today', timestamp: 5 },
-    lastUpdate: { label: 'You viewed this', icon: <OpenRegular /> },
-  },
-  ...Array.from({ length: 20 }, (_, i) => ({
-    file: { label: `Document ${i + 6}`, icon: <DocumentRegular /> },
-    author: { label: `User ${i + 6}`, status: 'available' as const },
-    lastUpdated: { label: `${i + 1} days ago`, timestamp: i + 6 },
-    lastUpdate: { label: 'You modified this', icon: <EditRegular /> },
-  })),
-];
+interface FileDetailsProps {
+  file: {
+    label: string;
+    type: 'document' | 'folder' | 'pdf' | 'video';
+    size: string;
+    lastModified: string;
+  } | null;
+}
 
-const columns = [
-  { columnKey: 'file', label: 'File' },
-  { columnKey: 'author', label: 'Author' },
-  { columnKey: 'lastUpdated', label: 'Last updated' },
-  { columnKey: 'lastUpdate', label: 'Last update' },
-];
-
-const HomePage = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  return (
-    <div
-      style={{
-        display: 'flex',
-        height: 'calc(100vh - 60px)', // Adjust based on your header height
-        overflow: 'hidden',
-      }}>
-      <div
+export const FileDetails: React.FC<FileDetailsProps> = ({ file }) => {
+  if (!file)
+    return (
+      <Card
         style={{
-          flex: '1',
-          overflowY: 'auto',
-          borderRight: '1px solid #e0e0e0',
+          width: '360px',
+          height: '100vh',
+          padding: '16px',
+          backgroundColor: tokens.colorNeutralBackground3,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
-        <Table
-          size="small"
-          aria-label="Table with small size"
-          style={{ width: '100%' }}>
-          <TableHeader>
-            <TableRow>
-              {columns.map((column) => (
-                <TableHeaderCell key={column.columnKey}>
-                  {column.label}
-                </TableHeaderCell>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.map((item) => (
-              <TableRow
-                key={item.file.label}
-                onClick={() => setSelectedFile(item.file)}>
-                <TableCell>
-                  <TableCellLayout media={item.file.icon}>
-                    {item.file.label}
-                  </TableCellLayout>
-                </TableCell>
-                <TableCell>
-                  <TableCellLayout
-                    media={
-                      <Avatar
-                        aria-label={item.author.label}
-                        name={item.author.label}
-                        badge={{ status: item.author.status }}
-                      />
-                    }>
-                    {item.author.label}
-                  </TableCellLayout>
-                </TableCell>
-                <TableCell>{item.lastUpdated.label}</TableCell>
-                <TableCell>
-                  <TableCellLayout media={item.lastUpdate.icon}>
-                    {item.lastUpdate.label}
-                  </TableCellLayout>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <Text>Select a file to view its details</Text>
+      </Card>
+    );
+
+  const fileIcons = {
+    document: <DocumentRegular />,
+    folder: <FolderRegular />,
+    pdf: <DocumentPdfRegular />,
+    video: <VideoRegular />,
+  };
+
+  return (
+    <Card
+      style={{
+        width: '360px',
+        height: '100vh',
+        padding: '16px',
+        backgroundColor: tokens.colorNeutralBackground3,
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+      <CardHeader
+        image={fileIcons[file.type]}
+        header={
+          <Text
+            weight="bold"
+            size={500}>
+            {file.label}
+          </Text>
+        }
+        actions={
+          <Button
+            appearance="subtle"
+            icon={<MoreHorizontalRegular />}
+            aria-label="More options"
+          />
+        }
+      />
+
+      <Divider />
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '8px',
+            marginBottom: '16px',
+          }}>
+          <Button
+            appearance="primary"
+            icon={<ShareRegular />}
+            style={{ width: '100%' }}>
+            Share
+          </Button>
+          <Button
+            appearance="secondary"
+            icon={<ArrowDownloadFilled />}
+            style={{ width: '100%' }}>
+            Download
+          </Button>
+        </div>
+
+        <Text
+          weight="semibold"
+          block
+          style={{ marginBottom: '8px' }}>
+          File Details
+        </Text>
+
+        <div style={{ display: 'grid', gap: '8px' }}>
+          <DetailRow
+            label="Type"
+            value={file.type}
+          />
+          <DetailRow
+            label="Size"
+            value={file.size}
+          />
+          <DetailRow
+            label="Last Modified"
+            value={file.lastModified}
+          />
+        </div>
       </div>
-      <FileDetails file={selectedFile} />
-    </div>
+
+      <Divider />
+
+      <CardFooter>
+        <Button
+          appearance="subtle"
+          style={{ width: '100%' }}>
+          View more details
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
-export default HomePage;
+const DetailRow = ({ label, value }: { label: string; value: string }) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    }}>
+    <Text size={200}>{label}</Text>
+    <Text
+      size={200}
+      weight="medium">
+      {value}
+    </Text>
+  </div>
+);
+
+export default FileDetails;
